@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>내 진로: 움직이는 기계를 만드는 사람</title>
+<style>
+:root{--bg:#f6f4ef;--card:#ffffff;--ink:#1d1f23;--sub:#5b606a;--line:#dedad0;--accent:#d9480f;--box:#efece4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171a;--card:#1e2126;--ink:#ecebe7;--sub:#9aa0aa;--line:#2f333a;--accent:#ff8a4c;--box:#262a31}}
+:root[data-theme="dark"]{--bg:#15171a;--card:#1e2126;--ink:#ecebe7;--sub:#9aa0aa;--line:#2f333a;--accent:#ff8a4c;--box:#262a31}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;line-height:1.75;font-size:17px}
+main{max-width:720px;margin:0 auto;padding:48px 20px 72px}
+.tag{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:.04em}
+h1{font-size:clamp(30px,6vw,44px);line-height:1.3;margin:8px 0 16px}
+h2{font-size:22px;margin:0 0 10px}
+p{margin:0 0 12px}
+.lead{color:var(--sub);font-size:18px}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-top:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:12px}
+.grid div{background:var(--box);border-radius:10px;padding:14px}
+.grid b{display:block;margin-bottom:4px}
+.grid span{color:var(--sub);font-size:15px}
+.steps{list-style:none;padding:0;margin:12px 0 0}
+.steps li{padding:10px 0 10px 16px;border-left:3px solid var(--accent);margin-bottom:6px}
+.steps b{display:block}
+canvas{width:100%;height:auto;background:var(--box);border-radius:10px;display:block;margin:12px 0}
+label{font-size:15px;color:var(--sub)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.note{color:var(--sub);font-size:15px}
+</style>
+</head>
+<body>
+<main>
+  <div class="tag">코딩 동아리 · 진로 소개</div>
+  <h1>코드로 생각하고,<br>기계로 움직이게 하고 싶다</h1>
+  <p class="lead">제 진로는 기계공학과 AI, 그러니까 물리 법칙 위에서 돌아가는 공학이에요. 화면 안에서만 동작하는 프로그램보다, 실제로 움직이는 물건을 만들고 싶습니다.</p>
+
+  <section>
+    <h2>왜 기계공학과 AI인가</h2>
+    <p>코딩을 하다 보면 결과가 늘 화면에서 끝나는 게 조금 아쉬웠어요. 내가 짠 코드가 팔을 움직이고, 바퀴를 굴리고, 물건을 집어 올리면 훨씬 재미있을 것 같았습니다.</p>
+    <p>그런데 기계는 코드만으로 움직이지 않아요. 힘, 마찰, 열, 전기 같은 물리가 먼저 맞아야 하고, 그 위에 AI가 “어떻게 움직일지”를 판단하게 하는 거예요. 그래서 두 분야를 같이 공부하려고 합니다.</p>
+  </section>
+
+  <section>
+    <h2>두 분야가 만나는 곳</h2>
+    <div class="grid">
+      <div><b>기계공학</b><span>뼈대와 근육. 구조, 힘, 모터, 열을 다뤄요.</span></div>
+      <div><b>AI</b><span>눈과 판단. 센서 값을 읽고 다음 동작을 정해요.</span></div>
+      <div><b>제어</b><span>둘을 잇는 신경. 목표와 현재 상태의 차이를 줄여 가요.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>직접 만져 보기: 기어비</h2>
+    <p>자전거 기어를 바꾸면 페달이 가벼워지거나 속도가 붙죠. 아래에서 두 기어의 이빨 수를 바꿔 보세요. 파란 쪽이 모터가 돌리는 입력 기어이고, 주황 쪽이 출력 기어예요. 출력 기어의 이빨이 많으면 느려지는 대신 힘이 세지고, 적으면 빨라지는 대신 힘이 약해져요. 모터로 무거운 로봇 팔을 움직일 때도 이 원리를 씁니다.</p>
+    <canvas id="c" width="640" height="220" aria-label="맞물려 돌아가는 두 개의 기어"></canvas>
+    <label for="n1">입력 기어 이빨 수: <span id="v1"></span></label>
+    <input id="n1" type="range" min="8" max="40" value="12">
+    <label for="n2">출력 기어 이빨 수: <span id="v2"></span></label>
+    <input id="n2" type="range" min="8" max="40" value="28">
+    <p id="out"><b></b></p>
+    <p class="note">속도는 입력 이빨 수 ÷ 출력 이빨 수 만큼 바뀌고, 힘(토크)은 그 반대로 바뀌어요. 마찰은 무시했어요.</p>
+  </section>
+
+  <section>
+    <h2>앞으로 공부할 것들</h2>
+    <ol class="steps">
+      <li><b>수학과 물리</b>미적분과 역학은 모든 기계의 바탕이라서 가장 먼저 탄탄하게 하고 싶어요.</li>
+      <li><b>파이썬과 C++</b>시뮬레이션은 파이썬으로, 실제 보드(아두이노 등)는 C++로 다뤄 볼 생각이에요.</li>
+      <li><b>작은 기계 만들기</b>센서로 장애물을 피하는 바퀴 로봇부터 시작해서, 점점 복잡한 걸 도전하려고 해요.</li>
+      <li><b>머신러닝 기초</b>선형대수와 통계를 익힌 뒤, 로봇이 스스로 배우게 하는 방법을 공부하고 싶어요.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>마치며</h2>
+    <p>당장은 작은 것부터예요. 그래도 “내가 만든 기계가 내 코드대로 움직이는 순간”을 계속 늘려 가는 게 목표입니다. 읽어 주셔서 고맙습니다.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  var cv=document.getElementById('c'),g=cv.getContext('2d');
+  var s1=document.getElementById('n1'),s2=document.getElementById('n2');
+  var M=5,th=0,t0=performance.now();
+  function col(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#888'}
+  function gear(cx,cy,N,ang,color){
+    var r=N*M/2,ro=r+4,rr=r-5,a=6.283/N;
+    g.beginPath();
+    for(var i=0;i<N;i++){
+      var c=ang+i*a;
+      var p=[[rr,c-.5*a],[rr,c-.3*a],[ro,c-.17*a],[ro,c+.17*a],[rr,c+.3*a],[rr,c+.5*a]];
+      for(var j=0;j<p.length;j++){
+        var x=cx+p[j][0]*Math.cos(p[j][1]),y=cy+p[j][0]*Math.sin(p[j][1]);
+        (i===0&&j===0)?g.moveTo(x,y):g.lineTo(x,y)
+      }
+    }
+    g.closePath();g.fillStyle=color;g.fill();
+    g.fillStyle=col('--card');g.beginPath();g.arc(cx,cy,r*.18,0,6.283);g.fill();
+    g.beginPath();g.arc(cx+r*.6*Math.cos(ang),cy+r*.6*Math.sin(ang),4,0,6.283);g.fill();
+  }
+  function step(now){
+    var dt=Math.min((now-t0)/1000,0.05);t0=now;
+    var n1=+s1.value,n2=+s2.value;
+    document.getElementById('v1').textContent=n1+'개';
+    document.getElementById('v2').textContent=n2+'개';
+    th+=dt*3.1416;
+    var r1=n1*M/2,r2=n2*M/2,D=r1+r2,x1=320-D/2,x2=x1+D,a2=6.283/n2;
+    var th2=Math.PI-a2/2-th*n1/n2;
+    g.clearRect(0,0,640,220);
+    gear(x1,110,n1,th,'#2f6fd1');
+    gear(x2,110,n2,th2,col('--accent'));
+    var rpm=30*n1/n2,tq=n2/n1;
+    document.querySelector('#out b').textContent='입력 30rpm → 출력 '+rpm.toFixed(1)+'rpm, 힘은 '+tq.toFixed(2)+'배';
+    requestAnimationFrame(step)
+  }
+  requestAnimationFrame(step)
+})();
+</script>
+</body>
+</html>
